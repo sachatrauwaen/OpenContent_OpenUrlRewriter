@@ -1,6 +1,6 @@
 <dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="OpenContent_OpenUrlRewriter" type="Provider" version="01.03.02">
+    <package name="OpenContent_OpenUrlRewriter" type="Provider" version="01.00.00">
       <friendlyName>OpenContent_OpenUrlRewriter</friendlyName>
       <description>Satrabel OpenContent OpenUrlRewriter provider</description>
       <iconFile>Images/icon_extensions.gif</iconFile>
@@ -14,7 +14,8 @@
       <releaseNotes src="ReleaseNotes.txt"></releaseNotes>
       <dependencies>
         <dependency type="CoreVersion">07.02.00</dependency>
-        <dependency type="package">OpenUrlRewriter</dependency>        
+        <dependency type="package">OpenUrlRewriter</dependency>
+        <dependency type="package">OpenContent</dependency>
       </dependencies>
 
       <components>

@@ -42,7 +42,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>PropertyAgent_OpenUrlRewriter.xml</DocumentationFile>
+    <DocumentationFile>OpenContent_OpenUrlRewriter.xml</DocumentationFile>
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
@@ -161,8 +161,8 @@
   </ProjectExtensions>
   <PropertyGroup>
     <Extension>zip</Extension>
-    <DNNFileName>PropertyAgent_OpenUrlRewriter</DNNFileName>
-    <PackageName>PropertyAgent_OpenUrlRewriter</PackageName>
+    <DNNFileName>OpenContent_OpenUrlRewriter</DNNFileName>
+    <PackageName>OpenContent_OpenUrlRewriter</PackageName>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\BuildScripts</MSBuildCommunityTasksPath>
   </PropertyGroup>
   <Import Project="BuildScripts\ModulePackage.Targets" />
