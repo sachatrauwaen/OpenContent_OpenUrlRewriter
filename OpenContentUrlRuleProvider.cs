@@ -37,11 +37,13 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
 
         public OpenContentUrlRuleProvider()
         {
+            /*
             var objProvider = (DotNetNuke.Framework.Providers.Provider)_providerConfiguration.Providers[ProviderName];
             if (!String.IsNullOrEmpty(objProvider.Attributes["includePageName"]))
             {
                 includePageName = bool.Parse(objProvider.Attributes["includePageName"]);
             }
+             */
             //CacheKeys = new string[] { "PropertyAgent-ProperyValues-All" };
 
             //HelpUrl = "https://openurlrewriter.codeplex.com/wikipage?title=OpenContent";
@@ -62,6 +64,8 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
 
                 if (settings.Template != null && settings.Template.IsListTemplate && !settings.IsOtherModule)
                 {
+                    var physicalTemplateFolder = settings.TemplateDir.PhysicalFullDirectory+ "\\";
+
                     HandlebarsEngine hbEngine = new HandlebarsEngine();
                     if (!string.IsNullOrEmpty(settings.Manifest.DetailUrl))
                     {
@@ -84,16 +88,19 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                             if (!string.IsNullOrEmpty(settings.Manifest.DetailUrl))
                             {
                                 string dataJson = content.Json;
-
                                 try
                                 {
+                                    /*
                                     if (LocaleController.Instance.GetLocales(PortalId).Count > 1)
                                     {
                                         dataJson = JsonUtils.SimplifyJson(dataJson, CultureCode);
                                     }
                                     dynamic dyn = JsonUtils.JsonToDynamic(dataJson);
-                                    
-                                    url = CleanupUrl(hbEngine.Execute(dyn));
+                                    */
+                                    ModelFactory mf = new ModelFactory(content, settings.Data, physicalTemplateFolder, settings.Template.Manifest, settings.Template, settings.Template.Main, module, PortalId, CultureCode, settings.TabId, module.ModuleID);
+                                    dynamic model = mf.GetModelAsDynamic(true);
+
+                                    url = CleanupUrl(hbEngine.Execute(model));
                                     //title = OpenContentUtils.CleanupUrl(dyn.Title);
                                 }
                                 catch (Exception)

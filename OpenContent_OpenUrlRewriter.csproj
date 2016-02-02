@@ -36,6 +36,7 @@
     <OutputPath>..\..\bin\</OutputPath>
     <DocumentationFile>NbStore_OpenUrlRewriter.xml</DocumentationFile>
     <WarningLevel>1</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,6 +45,7 @@
     <OutputPath>..\..\bin\</OutputPath>
     <DocumentationFile>OpenContent_OpenUrlRewriter.xml</DocumentationFile>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DotNetNuke, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
