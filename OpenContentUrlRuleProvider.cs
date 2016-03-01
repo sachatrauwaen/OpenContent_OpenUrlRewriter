@@ -83,7 +83,7 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                         }
                         foreach (OpenContentInfo content in contents)
                         {
-
+                            int MainTabId = settings.DetailTabId > 0 ? settings.DetailTabId : (settings.TabId > 0 ? settings.TabId : module.TabID);
                             string url = "content-" + content.ContentId;
                             if (!string.IsNullOrEmpty(settings.Manifest.DetailUrl))
                             {
@@ -97,15 +97,16 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                                     }
                                     dynamic dyn = JsonUtils.JsonToDynamic(dataJson);
                                     */
-                                    ModelFactory mf = new ModelFactory(content, settings.Data, physicalTemplateFolder, settings.Template.Manifest, settings.Template, settings.Template.Main, module, PortalId, CultureCode, settings.TabId, module.ModuleID);
+                                    
+                                    ModelFactory mf = new ModelFactory(content, settings.Data, physicalTemplateFolder, settings.Template.Manifest, settings.Template, settings.Template.Main, module, PortalId, CultureCode, MainTabId, module.ModuleID);
                                     dynamic model = mf.GetModelAsDynamic(true);
 
                                     url = CleanupUrl(hbEngine.Execute(model));
                                     //title = OpenContentUtils.CleanupUrl(dyn.Title);
                                 }
-                                catch (Exception)
+                                catch (Exception ex)
                                 {
-                                    // ignored
+                                    Log.Logger.Error("Failed to generate url for opencontent item " + content.ContentId, ex);
                                 }
                             }
 
@@ -114,7 +115,7 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                                 var rule = new UrlRule
                                 {
                                     CultureCode = RuleCultureCode,
-                                    TabId = module.TabID,
+                                    TabId = MainTabId,
                                     RuleType = UrlRuleType.Module,
                                     Parameters = "id=" + content.ContentId.ToString(),
                                     Action = UrlRuleAction.Rewrite,
