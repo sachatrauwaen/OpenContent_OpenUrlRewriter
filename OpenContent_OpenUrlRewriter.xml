@@ -4,5 +4,10 @@
         <name>Satrabel.OpenUrlRewriter.OpenContent</name>
     </assembly>
     <members>
+        <member name="T:Satrabel.OpenUrlRewriter.OpenContent.Log">
+            <summary>
+            Utility class containing several commonly used procedures by Stefan Kamphuis
+            </summary>
+        </member>
     </members>
 </doc>

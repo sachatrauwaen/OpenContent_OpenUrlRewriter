@@ -61,8 +61,10 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
             foreach (ModuleInfo module in modules.OfType<ModuleInfo>())
             {
                 OpenContentSettings settings = new OpenContentSettings(module.ModuleSettings);
+                int MainTabId = settings.DetailTabId > 0 ? settings.DetailTabId : (settings.TabId > 0 ? settings.TabId : module.TabID);
+                int MainModuleId = settings.IsOtherModule ? settings.ModuleId : module.ModuleID;
 
-                if (settings.Template != null && settings.Template.IsListTemplate && !settings.IsOtherModule)
+                if (settings.Template != null && settings.Template.IsListTemplate && ( !settings.IsOtherModule || settings.DetailTabId > 0) )
                 {
                     var physicalTemplateFolder = settings.TemplateDir.PhysicalFullDirectory+ "\\";
 
@@ -76,14 +78,14 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                         string CultureCode = key.Value.Code;
                         string RuleCultureCode = (dicLocales.Count > 1 ? CultureCode : null);
 
-                        var contents = occ.GetContents(module.ModuleID);
+                        var contents = occ.GetContents(MainModuleId);
                         if (contents.Count() > 1000)
                         {
                             continue;
                         }
                         foreach (OpenContentInfo content in contents)
                         {
-                            int MainTabId = settings.DetailTabId > 0 ? settings.DetailTabId : (settings.TabId > 0 ? settings.TabId : module.TabID);
+                            
                             string url = "content-" + content.ContentId;
                             if (!string.IsNullOrEmpty(settings.Manifest.DetailUrl))
                             {
@@ -98,7 +100,7 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                                     dynamic dyn = JsonUtils.JsonToDynamic(dataJson);
                                     */
                                     
-                                    ModelFactory mf = new ModelFactory(content, settings.Data, physicalTemplateFolder, settings.Template.Manifest, settings.Template, settings.Template.Main, module, PortalId, CultureCode, MainTabId, module.ModuleID);
+                                    ModelFactory mf = new ModelFactory(content, settings.Data, physicalTemplateFolder, settings.Template.Manifest, settings.Template, settings.Template.Main, module, PortalId, CultureCode, MainTabId, MainModuleId);
                                     dynamic model = mf.GetModelAsDynamic(true);
 
                                     url = CleanupUrl(hbEngine.Execute(model));
@@ -126,8 +128,9 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                                 {
                                     rule.Url = content.ContentId.ToString() + "-" + CleanupUrl(url);
                                 }
-
-                                Rules.Add(rule);
+                                bool RuleExist = Rules.Any(r => r.RuleType == rule.RuleType && r.CultureCode == rule.CultureCode && r.TabId == rule.TabId && r.Parameters == rule.Parameters && r.Action == rule.Action);
+                                
+                                if (!RuleExist) Rules.Add(rule);
 
                             }
                         }
