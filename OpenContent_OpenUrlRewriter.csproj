@@ -69,10 +69,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OpenContent, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\OpenContent.dll</HintPath>
-    </Reference>
     <Reference Include="Satrabel.OpenUrlRewriter, Version=0.1.0.31781, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Satrabel.OpenUrlRewriter.dll</HintPath>
@@ -177,5 +173,11 @@
   </Target>
   <ItemGroup>
     <Folder Include="App_LocalResources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenContent\OpenContent.csproj">
+      <Project>{7d61a32c-0f21-453f-a981-bd8e5a3a5304}</Project>
+      <Name>OpenContent</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -23,6 +23,8 @@ using Satrabel.OpenContent.Components;
 using Satrabel.OpenContent.Components.Handlebars;
 using Satrabel.OpenContent.Components.Json;
 using Satrabel.OpenContent.Components.Manifest;
+using Satrabel.OpenContent.Components.Datasource;
+using Satrabel.OpenContent.Components.UrlRewriter;
 
 namespace Satrabel.OpenUrlRewriter.OpenContent
 {
@@ -51,6 +53,19 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
 
         public override List<UrlRule> GetRules(int PortalId)
         {
+            var rules = OpenContentUrlProvider.GetRules(PortalId);
+
+            return rules.Select(r => new UrlRule() {
+                CultureCode = r.CultureCode,
+                TabId = r.TabId,
+                RuleType = UrlRuleType.Module,
+                Parameters = r.Parameters,
+                Action = UrlRuleAction.Rewrite,
+                Url = CleanupUrl(r.Url),
+                RemoveTab = !includePageName
+            }).ToList();
+
+            /*
             Dictionary<string, Locale> dicLocales = LocaleController.Instance.GetLocales(PortalId);  
             List<UrlRule> Rules = new List<UrlRule>();
             OpenContentController occ = new OpenContentController();
@@ -78,28 +93,33 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                         string CultureCode = key.Value.Code;
                         string RuleCultureCode = (dicLocales.Count > 1 ? CultureCode : null);
 
-                        var contents = occ.GetContents(MainModuleId);
-                        if (contents.Count() > 1000)
+                        //var contents = occ.GetContents(MainModuleId);
+                        var ds = DataSourceManager.GetDataSource(settings.Manifest.DataSource);            
+                        var dsContext = new DataSourceContext()
+                        {
+                            ModuleId = MainModuleId,
+                            TemplateFolder = settings.TemplateDir.FolderPath,
+                            Config = settings.Manifest.DataSourceConfig
+                        };
+                        IEnumerable<IDataItem> dataList = new List<IDataItem>();
+                        dataList = ds.GetAll(dsContext, null).Items;
+
+
+
+                        if (dataList.Count() > 1000)
                         {
                             continue;
                         }
-                        foreach (OpenContentInfo content in contents)
+                        foreach (IDataItem content in dataList)
                         {
                             
-                            string url = "content-" + content.ContentId;
+                            string url = "content-" + content.Id;
                             if (!string.IsNullOrEmpty(settings.Manifest.DetailUrl))
                             {
-                                string dataJson = content.Json;
+                                //string dataJson = content.Data;
                                 try
                                 {
-                                    /*
-                                    if (LocaleController.Instance.GetLocales(PortalId).Count > 1)
-                                    {
-                                        dataJson = JsonUtils.SimplifyJson(dataJson, CultureCode);
-                                    }
-                                    dynamic dyn = JsonUtils.JsonToDynamic(dataJson);
-                                    */
-                                    
+              
                                     ModelFactory mf = new ModelFactory(content, settings.Data, physicalTemplateFolder, settings.Template.Manifest, settings.Template, settings.Template.Main, module, PortalId, CultureCode, MainTabId, MainModuleId);
                                     dynamic model = mf.GetModelAsDynamic(true);
 
@@ -108,7 +128,7 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                                 }
                                 catch (Exception ex)
                                 {
-                                    Log.Logger.Error("Failed to generate url for opencontent item " + content.ContentId, ex);
+                                    Log.Logger.Error("Failed to generate url for opencontent item " + content.Id, ex);
                                 }
                             }
 
@@ -119,14 +139,14 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                                     CultureCode = RuleCultureCode,
                                     TabId = MainTabId,
                                     RuleType = UrlRuleType.Module,
-                                    Parameters = "id=" + content.ContentId.ToString(),
+                                    Parameters = "id=" + content.Id,
                                     Action = UrlRuleAction.Rewrite,
                                     Url = CleanupUrl(url),
                                     RemoveTab = !includePageName
                                 };
                                 if (Rules.Any(r => r.Url == rule.Url && r.CultureCode == rule.CultureCode && r.TabId == rule.TabId))
                                 {
-                                    rule.Url = content.ContentId.ToString() + "-" + CleanupUrl(url);
+                                    rule.Url = content.Id + "-" + CleanupUrl(url);
                                 }
                                 bool RuleExist = Rules.Any(r => r.RuleType == rule.RuleType && r.CultureCode == rule.CultureCode && r.TabId == rule.TabId && r.Parameters == rule.Parameters && r.Action == rule.Action);
                                 
@@ -138,6 +158,7 @@ namespace Satrabel.OpenUrlRewriter.OpenContent
                 }
             }
             return Rules;
+             */
         }
 
     }
