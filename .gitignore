@@ -30,3 +30,6 @@
 
 # Debug files
 *.dSYM/
+obj/
+OpenContent_OpenUrlRewriter.csproj.user
+packages/
